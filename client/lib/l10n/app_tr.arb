@@ -1,0 +1,22 @@
+{
+    "gamePin": "Oyun Kodu",
+    "enter": "Giriş",
+    "createAGame": "Oyun Oluştur",
+    "startGame": "Oyunu Başlat",
+    "addCoverPhoto": "Kapak Resmi Ekle",
+    "title": "Başlık",
+    "description": "Açıklama",
+    "addQuestion": "Soru Ekle",
+    "questions": "Sorular",
+    "addAnswer": "Cevap Ekle",
+    "question": "Soru",
+    "timeLimit": "Zaman Sınır",
+    "sec": "sn",
+    "done": "Bitti",
+    "correctAnswer": "Doğru Cevap",
+    "waitingForPlayers": "Oyuncular Bekleniyor...",
+    "ready": "Hazır Ol!",
+    "loading": "Yükleniyor...",
+    "exit": "Çıkış",
+    "optional": "(İsteğe Bağlı)"
+}

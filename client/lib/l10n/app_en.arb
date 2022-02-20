@@ -1,0 +1,23 @@
+{
+    "gamePin": "Game PIN",
+    "enter": "Enter",
+    "createAGame": "Create A Game",
+    "startGame": "Start Game",
+    "addCoverPhoto": "Add Cover Photo",
+    "title": "Title",
+    "description": "Description",
+    "addQuestion": "Add Question",
+    "questions": "Questions",
+    "addAnswer": "Add Answer",
+    "question": "Question",
+    "timeLimit": "Time Limit",
+    "sec": "sec",
+    "done": "Done",
+    "correctAnswer": "Correct Answer",
+    "waitingForPlayers": "Waiting For Players...",
+    "ready": "Ready!",
+    "loading": "Loading...",
+    "exit": "Exit",
+    "optional": "(Optional)"
+    
+}
