@@ -1,14 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { Game } from 'src/games/game.model';
 
-import { User } from './user.model';
+import { User, UserDocument } from './user.model';
 
 @Injectable()
 export class UsersService {
   constructor(
-    @InjectModel('User') private readonly userModel: Model<User>,
-  ) {}
+    @InjectModel('User') private readonly userModel: Model<User>) {}
 
   async insertUser(
     nickname: string, 
@@ -21,7 +21,7 @@ export class UsersService {
       isHost,
     });
     const result = await newUser.save();
-    return result.id as string;
+    return result;
   }
 
   async getUsers() {
@@ -32,6 +32,12 @@ export class UsersService {
       playingGameId: user.playingGameId,
       isHost: user.isHost,
     }));
+  }
+
+
+  async getUsersInGame(gameId: string) {
+    const users = await this.userModel.find({playingGameId:gameId,isHost:false}).sort({point:-1}).exec();
+    return users;
   }
 
   async getSingleUser(userId: string) {
@@ -47,15 +53,11 @@ export class UsersService {
   async updateUser(
     userId: string,
     nickname: string,
-    playingGameId: string,
     isHost: boolean,
   ) {
     const updatedUser = await this.findUser(userId);
     if (nickname) {
       updatedUser.nickname = nickname;
-    }
-    if (playingGameId) {
-      updatedUser.playingGameId = playingGameId;
     }
     if (isHost) {
       updatedUser.isHost = isHost;
@@ -70,7 +72,7 @@ export class UsersService {
     }
   }
 
-  private async findUser(id: string): Promise<User> {
+  private async findUser(id: string): Promise<UserDocument> {
     let user;
     try {
       user = await this.userModel.findById(id).exec();

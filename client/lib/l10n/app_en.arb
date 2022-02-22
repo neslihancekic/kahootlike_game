@@ -18,6 +18,8 @@
     "ready": "Ready!",
     "loading": "Loading...",
     "exit": "Exit",
-    "optional": "(Optional)"
+    "optional": "(Optional)",
+    "gameAlreadyStarted": "Game Already Started",
+    "nickName": "Nickname"
     
 }

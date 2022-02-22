@@ -12,7 +12,7 @@ class AppTheme {
 
   static const surface1 = Color.fromARGB(255, 252, 252, 253);
   static const surface2 = Color.fromARGB(255, 246, 247, 250);
-  static const surface3 = Color.fromARGB(255, 208, 214, 222);
+  static const surface3 = Color.fromARGB(255, 70, 70, 70);
   static const border = Color.fromARGB(255, 236, 239, 242);
 
   static const blue = Color.fromARGB(255, 58, 74, 174);

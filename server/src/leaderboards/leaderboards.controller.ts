@@ -7,25 +7,23 @@ import {
     Patch,
     Delete,
   } from '@nestjs/common';
+import { UsersService } from 'src/users/users.service';
   
   import { LeaderboardsService } from './leaderboards.service';
   
   @Controller('leaderboards')
   export class LeaderboardsController {
-    constructor(private readonly leaderboardsService: LeaderboardsService) {}
+    constructor(private readonly leaderboardsService: LeaderboardsService,
+                private readonly usersService: UsersService) {}
   
     @Post()
     async addLeaderboard(
-      @Body('gameId') gameId: string,
-      @Body('userId') userId: string,
-      @Body('point') point: number,
+      @Body('gameId') gameId: string
     ) {
-      const generatedId = await this.leaderboardsService.insertLeaderboard(
-        gameId,
-        userId,
-        point,
+      const generatedIds = await this.leaderboardsService.insertLeaderboard(
+        gameId
       );
-      return { id: generatedId };
+      return  generatedIds ;
     }
   
     @Get()
@@ -34,17 +32,18 @@ import {
       return leaderboards;
     }
   
-    @Get(':id')
-    getLeaderboard(@Param('id') Id: string) {
-      return this.leaderboardsService.getSingleLeaderboard(Id);
+    @Get(':gameId')
+    getLeaderboard(@Param('gameId') gameId: string) {
+      return this.leaderboardsService.getAllLeaderboard(gameId);
     }
   
-    @Patch(':id')
+    @Patch(':gameId/:userId')
     async updateLeaderboard(
-      @Param('id') id: string,
+      @Param('gameId') gameId: string,
+      @Param('userId') userId: string,
       @Body('point') point: number,
     ) {
-      await this.leaderboardsService.updateLeaderboard(id,point);
+      await this.leaderboardsService.updateLeaderboard(gameId,userId,point);
       return null;
     }
   

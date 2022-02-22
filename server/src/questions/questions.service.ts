@@ -2,12 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { Question } from './question.model';
+import { QuestionDocument } from './question.model';
 
 @Injectable()
 export class QuestionsService {
   constructor(
-    @InjectModel('Question') private readonly questionModel: Model<Question>,
+    @InjectModel('Question') private readonly questionModel: Model<QuestionDocument>,
   ) {}
 
   async insertQuestion(
@@ -27,6 +27,7 @@ export class QuestionsService {
       isMultiSelect,
       type
     });
+    
     const result = await newQuestion.save();
     return result.id as string;
   }
@@ -96,7 +97,7 @@ export class QuestionsService {
     }
   }
 
-  private async findQuestion(id: string): Promise<Question> {
+  private async findQuestion(id: string): Promise<QuestionDocument> {
     let question;
     try {
       question = await this.questionModel.findById(id).exec();

@@ -1,34 +1,40 @@
-import * as mongoose from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Type } from 'class-transformer';
+import mongoose from 'mongoose';
+import { Document } from 'mongoose';
+import { Question } from 'src/questions/question.model';
 
-export const ChoiceSchema = new mongoose.Schema({
-        questionId: {
-            type: mongoose.SchemaTypes.ObjectId,
-            ref: 'Question',
-            required: true
-        },
-        choiceText: {
-            type: String,
-            maxlength: 75,
-            required: true 
-        },
-        isCorrectAnswer: {
-            type: Boolean,
-            required: true,
-            default: false
-        },
-        order: {
-            type: Number,
-            min:1,
-            max:4
-        },
-    },
-    {timestamps: true}
-);
+export type ChoiceDocument = Choice & Document;
 
-export interface Choice extends mongoose.Document {
-  id: string;
-  questionId: string;
+@Schema({
+    toJSON: {
+        getters: true,
+        virtuals: true,
+      }, 
+      toObject:{
+          getters: true,
+          virtuals: true,
+      }, 
+  })
+export class Choice {
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Question',  required: true })
+  @Type(() => Question)
+  questionId: Question;
+ 
+  @Prop({ required: true,
+    maxlength: 75, })
   choiceText: string;
+
+
+  @Prop({ required: true, default: false })
   isCorrectAnswer: boolean;
+
+  @Prop({ min:1, max:4})
   order: number;
+
+
 }
+
+export const ChoiceSchema = SchemaFactory.createForClass(Choice);
+
+   

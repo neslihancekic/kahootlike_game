@@ -7,30 +7,38 @@ import {
     Patch,
     Delete,
   } from '@nestjs/common';
+import { GamesService } from 'src/games/games.service';
   
   import { UsersService } from './users.service';
   
   @Controller('users')
   export class UsersController {
-    constructor(private readonly usersService: UsersService) {}
+    constructor(private readonly usersService: UsersService,private readonly gamesService: GamesService) {}
   
     @Post()
     async addUser(
       @Body('nickname') nickname: string,
-      @Body('playingGameId') playingGameId: string,
+      @Body('pin') pin: string,
       @Body('isHost') isHost: boolean,
     ) {
-      const generatedId = await this.usersService.insertUser(
+      const game = await this.gamesService.findGameByPin(pin);
+      const generatedUser = await this.usersService.insertUser(
         nickname,
-        playingGameId,
+        game.id,
         isHost,
       );
-      return { id: generatedId };
+      return generatedUser;
     }
   
     @Get()
     async getAllUsers() {
       const users = await this.usersService.getUsers();
+      return users;
+    }
+
+    @Get('/inGame/:gameId')
+    async getUsersInGame(@Param('gameId') gameId: string) {
+      const users = await this.usersService.getUsersInGame(gameId);
       return users;
     }
   
@@ -46,7 +54,7 @@ import {
       @Body('playingGameId') playingGameId: string,
       @Body('isHost') isHost: boolean,
     ) {
-      await this.usersService.updateUser(id, nickname, playingGameId, isHost);
+      await this.usersService.updateUser(id, nickname, isHost);
       return null;
     }
   

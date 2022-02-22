@@ -13,18 +13,7 @@ export class FilesController {
         const response = [];
         files.forEach(file => {
             const fileReponse = {
-                originalname: file.originalname,
-                encoding: file.encoding,
-                mimetype: file.mimetype,
-                id: file.id,
-                filename: file.filename,
-                metadata: file.metadata,
-                bucketName: file.bucketName,
-                chunkSize: file.chunkSize,
-                size: file.size,
-                md5: file.md5,
-                uploadDate: file.uploadDate,
-                contentType: file.contentType,
+                id: file.id
             };
             response.push(fileReponse);
         });

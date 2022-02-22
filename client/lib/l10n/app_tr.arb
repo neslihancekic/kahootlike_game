@@ -18,5 +18,7 @@
     "ready": "Hazır Ol!",
     "loading": "Yükleniyor...",
     "exit": "Çıkış",
-    "optional": "(İsteğe Bağlı)"
+    "optional": "(İsteğe Bağlı)",
+    "gameAlreadyStarted": "Oyun Çoktan Başladı",
+    "nickName": "Takma Ad"
 }

@@ -136,7 +136,7 @@ class ActiveTextButton extends StatelessWidget {
               style: TextStyle(
                 fontSize: fontSize,
                 fontWeight: FontWeight.w600,
-                color: AppTheme.primary,
+                color: AppTheme.white,
               ),
             ),
           ],
@@ -193,22 +193,20 @@ class BusyPageIndicator extends StatelessWidget {
       color: AppTheme.primary.withOpacity(.5),
       child: Center(
           child: Container(
-              width: 150,
-              height: 150,
-              child: Image.asset('assets/images/dualBall.gif'))),
+              width: 150, height: 150, child: Icon(Icons.timelapse_rounded))),
     );
   }
 }
 
 class CustomBoxShadow extends BoxShadow {
   @override
-  Color get color => AppTheme.surface3.withOpacity(.5);
+  Color get color => AppTheme.surface3.withOpacity(.2);
   @override
   double get blurRadius => 10;
   @override
-  double get spreadRadius => 1;
+  double get spreadRadius => 0;
   @override
-  Offset get offset => Offset(-5, 5);
+  Offset get offset => Offset(0, 5);
 }
 
 class CustomEntry extends StatelessWidget {
@@ -225,6 +223,8 @@ class CustomEntry extends StatelessWidget {
   final int? maxLength;
   final bool hasShadow;
   final bool isRequired;
+  final BoxDecoration? boxDecoration;
+  final double? height;
   const CustomEntry(this.placeHolder, this.controller, this.focusNode,
       {Key? key,
       this.fontSize = AppTheme.bodyFontsize15,
@@ -236,7 +236,9 @@ class CustomEntry extends StatelessWidget {
       this.autoFocus = false,
       this.maxLength,
       this.hasShadow = true,
-      this.isRequired = false})
+      this.isRequired = false,
+      this.boxDecoration,
+      this.height})
       : super(key: key);
 
   @override
@@ -246,12 +248,13 @@ class CustomEntry extends StatelessWidget {
     focusNode.addListener(() => entryController.isPlaceHolderState.value =
         !focusNode.hasFocus && controller.text.isEmpty);
     return Container(
-        height: 58,
-        decoration: BoxDecoration(
-            color: AppTheme.white,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: AppTheme.surface3, width: 2),
-            boxShadow: hasShadow ? [CustomBoxShadow()] : []),
+        height: height ?? 58,
+        decoration: boxDecoration ??
+            BoxDecoration(
+                color: AppTheme.white,
+                borderRadius: BorderRadius.circular(10),
+                border: Border.all(color: AppTheme.surface3, width: 2),
+                boxShadow: hasShadow ? [CustomBoxShadow()] : []),
         child: Stack(alignment: Alignment.center, children: <Widget>[
           entryController.isPlaceHolderState.value
               ? Center(
@@ -285,7 +288,7 @@ class CustomEntry extends StatelessWidget {
               controller: controller,
               autocorrect: false,
               maxLength: maxLength,
-              onEditingComplete: () => onEditingComplete,
+              onEditingComplete: () => {onEditingComplete!.call()},
               keyboardType: keyboardType,
               textInputAction: textInputAction,
               textAlign: TextAlign.center,

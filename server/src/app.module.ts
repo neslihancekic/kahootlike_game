@@ -12,9 +12,6 @@ import { ChoicesModule } from './choices/choices.module';
 import { LeaderboardsModule } from './leaderboards/leaderboards.module';
 import { FilesModule } from './files/files.module';
 
-//Web Socket
-import { EventGateway } from './event/event.gateaway';
-
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -27,8 +24,7 @@ import { EventGateway } from './event/event.gateaway';
     QuestionsModule,
     ChoicesModule,
     LeaderboardsModule,
-    FilesModule,
-    EventGateway
+    FilesModule
   ],
   controllers: [AppController],
   providers: [AppService],

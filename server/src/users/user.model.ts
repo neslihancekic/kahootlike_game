@@ -1,25 +1,34 @@
-import * as mongoose from 'mongoose';
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Type } from 'class-transformer';
+import mongoose from 'mongoose';
+import { Document } from 'mongoose';
+import { Choice, ChoiceDocument, ChoiceSchema } from 'src/choices/choices.model';
+import { Game } from 'src/games/game.model';
 
-export const UserSchema = new mongoose.Schema({
-    nickname: {
-        type: String,
-        required: true 
-    },
-    playingGameId: {
-        type: mongoose.SchemaTypes.ObjectId,
-        ref: 'Game'
-    },
-    isHost: {
-        type: Boolean,
-        default: false,
-        required: true
-    }
-},
-{timestamps: true});
+export type UserDocument = User & Document;
 
-export interface User extends mongoose.Document {
-  id: string;
+@Schema({
+    toJSON: {
+        getters: true,
+        virtuals: true,
+      }, 
+      toObject:{
+          getters: true,
+          virtuals: true,
+      }, 
+  })
+export class User {
+  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'Game',  required: true })
+  @Type(() => Game)
+  playingGameId: Game;
+
+  @Prop({ required: true })
   nickname: string;
-  playingGameId: string;
+
+  @Prop({ required: true })
   isHost: boolean;
+
 }
+const UserSchema = SchemaFactory.createForClass(User);
+
+export { UserSchema };

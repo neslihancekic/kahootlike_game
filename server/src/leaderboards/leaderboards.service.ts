@@ -1,23 +1,26 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { GameDocument } from 'src/games/game.model';
+import { User, UserDocument } from 'src/users/user.model';
 
-import { Leaderboard } from './leaderboard.model';
+import { LeaderBoardDocument } from './leaderboard.model';
 
 @Injectable()
 export class LeaderboardsService {
   constructor(
-    @InjectModel('Leaderboard') private readonly leaderboardModel: Model<Leaderboard>,
-  ) {}
+    @InjectModel('Leaderboard') private readonly leaderboardModel: Model<LeaderBoardDocument>,
+    @InjectModel('User') private readonly userModel: Model<UserDocument>,) {}
 
-  async insertLeaderboard(gameId: string,userId: string,point: number) {
-    const newLeaderboard = new this.leaderboardModel({
-      gameId,
-      userId,
-      point
-    });
-    const result = await newLeaderboard.save();
-    return result.id as string;
+  async insertLeaderboard(gameId: string) {
+    const users = await this.userModel.find({playingGameId:gameId,isHost:false}).exec();
+    for(var u of users){
+      const newLeaderboard = new this.leaderboardModel({
+        gameId,userId:u.id
+      });
+      const result = await newLeaderboard.save();
+    }
+    return "Leaderboard created!" as string;
   }
 
   async getLeaderboards() {
@@ -28,6 +31,11 @@ export class LeaderboardsService {
       userId: leaderboard.userId,
       point: leaderboard.point,
     }));
+  }
+  async getAllLeaderboard(gameId: string) {
+    const leaderboards = await this.leaderboardModel.find({gameId:gameId}).populate({
+      path: 'user'}).exec();
+    return leaderboards
   }
 
   async getSingleLeaderboard(leaderboardId: string) {
@@ -41,13 +49,15 @@ export class LeaderboardsService {
   }
 
   async updateLeaderboard(
-    leaderboardId: string,
-    point: number
+    gameId: string,
+    userId: string,
+    point: number,
   ) {
-    const updatedLeaderboard = await this.findLeaderboard(leaderboardId);
+    const updatedLeaderboard =  await this.leaderboardModel.findOne({gameId:gameId,userId:userId}).exec();
     if (point) {
       updatedLeaderboard.point = point;
     }
+    updatedLeaderboard.isFinished=true;
     updatedLeaderboard.save();
   }
 
@@ -58,7 +68,7 @@ export class LeaderboardsService {
     }
   }
 
-  private async findLeaderboard(id: string): Promise<Leaderboard> {
+  private async findLeaderboard(id: string): Promise<LeaderBoardDocument> {
     let leaderboard;
     try {
       leaderboard = await this.leaderboardModel.findById(id).exec();

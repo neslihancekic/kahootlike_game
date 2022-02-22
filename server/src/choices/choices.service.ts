@@ -2,12 +2,12 @@ import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 
-import { Choice } from './choices.model';
+import { ChoiceDocument } from './choices.model';
 
 @Injectable()
 export class ChoicesService {
   constructor(
-    @InjectModel('Choice') private readonly choiceModel: Model<Choice>,
+    @InjectModel('Choice') private readonly choiceModel: Model<ChoiceDocument>,
   ) {}
 
   async insertChoice(
@@ -70,7 +70,7 @@ export class ChoicesService {
     }
   }
 
-  private async findChoice(id: string): Promise<Choice> {
+  private async findChoice(id: string): Promise<ChoiceDocument> {
     let choice;
     try {
       choice = await this.choiceModel.findById(id).exec();

@@ -22,7 +22,8 @@ import {
       @Body('questionPoint') questionPoint: number,
       @Body('timeLimit') timeLimit: number,
       @Body('isMultiSelect') isMultiSelect: boolean,
-      @Body('type') type: number,
+      @Body('type') type: number
+
     ) {
       const generatedId = await this.questionsService.insertQuestion(
         gameId,

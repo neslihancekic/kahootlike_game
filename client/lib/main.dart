@@ -1,7 +1,13 @@
 import 'dart:async';
 
 import 'package:flutter/services.dart';
+import 'package:kahootlike_game/services/game_service.dart';
+import 'package:kahootlike_game/services/leaderboard_service.dart';
+import 'package:kahootlike_game/services/network/api_service.dart';
+import 'package:kahootlike_game/services/upload_service.dart';
+import 'package:kahootlike_game/services/user_service.dart';
 import 'package:kahootlike_game/utils/themes.dart';
+import 'package:kahootlike_game/views/generic.dart/actions.dart';
 import 'package:kahootlike_game/views/openning.dart';
 import 'package:leak_detector/leak_detector.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
@@ -14,24 +20,20 @@ void main() async {
   runZonedGuarded(() async {
     await initServices();
     WidgetsFlutterBinding.ensureInitialized();
-    LeakDetector().init(maxRetainingPath: 300);
-    LeakDetector().onLeakedStream.listen((LeakedInfo info) {
-      //print to console
-      info.retainingPath.forEach((node) => print(node));
-      //show preview page
-      showLeakedInfoPage(navigatorKey.currentContext!, info);
-    });
-
-    runApp(const MainPage());
+    runApp(const MainWidget());
   }, (error, stackTrace) async {});
 }
 
 Future initServices() async {
-  //Get.put(EmployeeService());
+  Get.put(ApiService());
+  Get.put(UserService());
+  Get.put(GameService());
+  Get.put(UploadService());
+  Get.put(LeaderboardService());
 }
 
-class MainPage extends StatelessWidget {
-  const MainPage({Key? key}) : super(key: key);
+class MainWidget extends StatelessWidget {
+  const MainWidget({Key? key}) : super(key: key);
   @override
   Widget build(BuildContext context) {
     SystemChrome.setPreferredOrientations([
@@ -54,13 +56,25 @@ class MainPage extends StatelessWidget {
             primaryColor: AppTheme.primary,
             scaffoldBackgroundColor: AppTheme.surface1),
         initialRoute: '/',
-        getPages: [GetPage(name: "/", page: () => const OpenningPage())],
-        navigatorObservers: [
-          LeakNavigatorObserver(
-            shouldCheck: (route) {
-              return route.settings.name != null && route.settings.name != '/';
-            },
-          ),
-        ]);
+        getPages: [GetPage(name: "/", page: () => const MainPage())],
+        navigatorObservers: []);
+  }
+}
+
+class MainPage extends StatelessWidget {
+  const MainPage({Key? key}) : super(key: key);
+  @override
+  Widget build(BuildContext context) {
+    final List<Widget> pages = [const OpenningPage()];
+
+    Future<bool> _onWillPop() async {
+      return false;
+    }
+
+    return WillPopScope(
+        onWillPop: _onWillPop,
+        child: Scaffold(
+          body: pages.first,
+        ));
   }
 }

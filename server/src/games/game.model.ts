@@ -1,39 +1,50 @@
-import * as mongoose from 'mongoose';
+
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Type } from 'class-transformer';
+import mongoose from 'mongoose';
+import { Document } from 'mongoose';
+import { Question, QuestionSchema } from 'src/questions/question.model';
 
 export enum GameState {
-    Ready=10,
-    Waiting=20,
-    InProgress=30,
-    Done=40
+    Waiting=10,
+    InProgress=20,
+    Done=30
 }
+export type GameDocument = Game & Document;
 
-export const GameSchema = new mongoose.Schema({
-    title: {
-        type: String,
-        required: true 
-    },
-    description: {
-        type: String,
-        required: true
-    },
-    pin: {
-        type: Number,
-        required: true,
-        maxlength: 8
-    },
-    state: { 
-        type: Number,
-        enum: GameState, 
-        required: true, 
-        default:GameState.Ready
-    },
-},
-{timestamps: true});
-
-export interface Game extends mongoose.Document {
-  id: string;
+@Schema({
+    toJSON: {
+      getters: true,
+      virtuals: true,
+    }
+  })
+export class Game {
+  @Prop({ required: true })
   title: string;
+
+  @Prop({ required: true })
   description: string;
+
+  @Prop({ maxlength: 8 })
   pin: number;
+
+  @Prop({
+    enum: GameState, 
+    required: true, 
+    default:GameState.Waiting})
   state: number;
+
+  @Type(() => Question)
+  questions: Question[];
+
 }
+
+const GameSchema = SchemaFactory.createForClass(Game);
+
+GameSchema.virtual('questions', {
+    ref: 'Question',
+    localField: '_id',
+    foreignField: 'gameId',
+});
+   
+export { GameSchema };
